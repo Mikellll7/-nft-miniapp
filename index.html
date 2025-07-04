@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NFT Маркет</title>
+  <style>
+    :root {
+      --bg-light: #f4f4f4;
+      --bg-dark: #1c1c1c;
+      --text-light: #000;
+      --text-dark: #fff;
+      --card-bg-light: #fff;
+      --card-bg-dark: #2c2c2c;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-light);
+      transition: all 0.3s ease;
+      padding: 20px;
+    }
+
+    body.dark {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    .toggle-theme {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .nft-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .nft-card {
+      background-color: var(--card-bg-light);
+      border-radius: 10px;
+      padding: 10px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    body.dark .nft-card {
+      background-color: var(--card-bg-dark);
+      box-shadow: 0 4px 8px rgba(255,255,255,0.05);
+    }
+
+    .nft-image {
+      width: 100%;
+      border-radius: 8px;
+    }
+
+    .nft-details {
+      margin-top: 10px;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #005f99;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-theme" onclick="toggleTheme()">🌙/☀️</button>
+  <h1>NFT Маркет</h1>
+  <div class="nft-list">
+    <div class="nft-card">
+      <img src="https://raw.githubusercontent.com/Mikellll7/nft-miniapp/main/assets/001.png" alt="NFT #001" class="nft-image" />
+      <div class="nft-details">
+        <h2>Балтийский корабль #001</h2>
+        <p>Цена: 10 TON / 12 USDT</p>
+        <button onclick="buyNFT('001')">Купить</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      document.body.classList.toggle('dark');
+    }
+
+    function buyNFT(id) {
+      Telegram.WebApp.sendData(JSON.stringify({ action: 'buy', id }));
+    }
+
+    Telegram.WebApp.ready();
+  </script>
+</body>
+</html>
