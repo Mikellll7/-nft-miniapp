@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NFT Маркет</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: var(--bg);
+      color: var(--text);
+    }
+    :root {
+      --bg: #ffffff;
+      --text: #000000;
+    }
+    [data-theme="dark"] {
+      --bg: #121212;
+      --text: #ffffff;
+    }
+    header {
+      padding: 16px;
+      text-align: center;
+      background-color: #0088cc;
+      color: white;
+    }
+    .container {
+      padding: 16px;
+    }
+    .nft-card {
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+    }
+    .nft-card img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .nft-card h3 {
+      margin: 8px 0 4px;
+    }
+    .nft-card p {
+      margin: 0;
+    }
+    .nft-card button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      background: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .address-form {
+      margin-top: 10px;
+    }
+    .address-form textarea {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Мой NFT Маркет</h1>
+  </header>
+
+  <div class="container" id="nft-list">
+    <!-- NFT карточки будут тут -->
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    const user = tg.initDataUnsafe.user;
+    const theme = tg.colorScheme;
+    if (theme === 'dark') {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
+
+    const nfts = [
+      {
+        id: "001",
+        title: "Балтийский корабль",
+        image: "https://yourcdn.com/nft/001.png",
+        priceTon: 3.5,
+        priceUsdt: 6,
+        exclusive: false
+      },
+      {
+        id: "EXCL01",
+        title: "Эксклюзивная NFT #1",
+        image: "https://yourcdn.com/nft/exclusive1.png",
+        priceTon: 30,
+        priceUsdt: 50,
+        exclusive: true
+      }
+    ];
+
+    const list = document.getElementById("nft-list");
+
+    nfts.forEach(nft => {
+      const card = document.createElement("div");
+      card.className = "nft-card";
+
+      card.innerHTML = `
+        <img src="${nft.image}" alt="${nft.title}" />
+        <h3>${nft.title}</h3>
+        <p>Цена: ${nft.priceTon} TON / ${nft.priceUsdt} USDT</p>
+        <button onclick="buyNFT('${nft.id}', ${nft.exclusive})">Купить</button>
+        ${nft.exclusive ? `
+          <div class="address-form" id="addr-${nft.id}" style="display:none">
+            <label>Введите адрес доставки:</label>
+            <textarea id="input-${nft.id}" rows="3" placeholder="Город, улица, индекс..."></textarea>
+          </div>
+        ` : ''}
+      `;
+
+      list.appendChild(card);
+    });
+
+    function buyNFT(id, isExclusive) {
+      if (isExclusive) {
+        const form = document.getElementById(`addr-${id}`);
+        form.style.display = "block";
+        const textarea = document.getElementById(`input-${id}`);
+        textarea.addEventListener("blur", () => {
+          const address = textarea.value.trim();
+          if (address.length > 5) {
+            tg.sendData(JSON.stringify({ nftId: id, address }));
+            tg.close();
+          }
+        });
+      } else {
+        tg.sendData(JSON.stringify({ nftId: id }));
+        tg.close();
+      }
+    }
+  </script>
+</body>
+</html>
